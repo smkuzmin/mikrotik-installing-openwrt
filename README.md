@@ -1,4 +1,6 @@
-## Прошиваем MikroTik [RB952Ui-5ac2nD (hAP ac lite)](https://mikrotik.com/product/RB952Ui-5ac2nD) в [OpenWrt](https://openwrt.org/) и устанавливаем [youtubeUnblock](https://github.com/Waujito/youtubeUnblock)
+## MikroTik: Прошивка в OpenWrt и установка youtubeUnblock
+
+Прошиваем MikroTik [RB952Ui-5ac2nD (hAP ac lite)](https://mikrotik.com/product/RB952Ui-5ac2nD) в [OpenWrt](https://openwrt.org/) и устанавливаем [youtubeUnblock](https://github.com/Waujito/youtubeUnblock)
 
 Полученный таким образом *новый роутер* можно использовать для просмотра YouTube на смарт-TV, не поддерживающем никакие методы обхода блокировок.
 
