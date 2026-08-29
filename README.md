@@ -202,8 +202,15 @@ reboot
 
 ```bash
 (
+  ### Обновляем списки пакетов
+  # System -> Software -> Update lists..
+  opkg update || { echo 'OPKG UPDATE ERROR'; exit 1; }
+
   ### Устанавливаем зависимости для youtubeUnblock
-  opkg update && opkg install kmod-nfnetlink-queue kmod-nft-queue kmod-nf-conntrack
+  # System -> Software -> Download and install package: kmod-nfnetlink-queue -> OK -> Install -> Dismiss
+  # System -> Software -> Download and install package: kmod-nft-queue       -> OK -> Install -> Dismiss
+  # System -> Software -> Download and install package: kmod-nf-conntrack    -> OK -> Install -> Dismiss
+  opkg install kmod-nfnetlink-queue kmod-nft-queue kmod-nf-conntrack
 
   ### Скачиваем и устанавливаем пакеты youtubeUnblock для OpenWrt 24.10
   # System -> Software -> Upload Package.. -> Browse.. -> youtubeUnblock-1.3.1-1-4a223b0-mips_24kc-openwrt-24.10.ipk -> Upload -> Install -> Dismiss
