@@ -53,7 +53,7 @@
 21. Ждем, когда роутер прошьется и перезагрузится (*НИ В КОЕМ СЛУЧАЕ НЕ ОТКЛЮЧАЙТЕ ПИТАНИЕ РОУТЕРА В ПРОЦЕССЕ ПРОШИВКИ*).
 22. Заходим в Web-интерфейс (**Status** -> **Overview**) и убеждаемся, что прошивка удалась - **Firmware Version: 24.10.\***.
 
-> *Если к процессу прошивки остались вопросы, то можно посмотреть на инструкцию с картинками для [[MikroTik. Прошивка hAP lite в OpenWrt|MikroTik RB941-2nD (hAP lite)]]. Но файлы прошивки используем строго те, что указаны выше.*
+ > *Если к процессу прошивки остались вопросы, то можно посмотреть на инструкцию с картинками для [[MikroTik. Прошивка RB941-2nD (hAP lite) в OpenWrt|MikroTik RB941-2nD (hAP lite)]]. Но файлы прошивки используем строго те, что указаны выше.*
 
 ### 2. Подключаем устройство
 
@@ -83,7 +83,11 @@ uci set luci.main.lang='en'
 uci set system.@system[0].timezone='<+04>-4'
 uci set system.@system[0].zonename='Europe/Samara'
 
-### Отключаем PoE-Out (чтобы порт не горел красным)
+### Отключаем PoE-Out на MikroTik (чтобы порт не горел красным) - добавляем команды (перед exit 0) в скрипт автозапуска
+# System -> Startup -> Local Startup:
+# sleep 2; for f in /sys/class/gpio/*poe*/value; do echo 0 >$f; done
+# exit 0
+# -> Save -> Dismiss
 grep -q 'gpio.*poe' /etc/rc.local || sed -i '/exit 0/i sleep 2; for f in /sys/class/gpio/*poe*/value; do echo 0 >$f; done' /etc/rc.local
 
 ### Разрешаем подключения на WAN-интерфейсе
@@ -204,30 +208,28 @@ reboot
 (
   ### Обновляем списки пакетов
   # System -> Software -> Update lists..
-  opkg update || { echo 'OPKG UPDATE ERROR'; exit 1; }
+  opkg update || { echo 'ERROR: opkg update'; exit 1; }
 
   ### Устанавливаем зависимости для youtubeUnblock
   # System -> Software -> Download and install package: kmod-nfnetlink-queue -> OK -> Install -> Dismiss
   # System -> Software -> Download and install package: kmod-nft-queue       -> OK -> Install -> Dismiss
   # System -> Software -> Download and install package: kmod-nf-conntrack    -> OK -> Install -> Dismiss
-  opkg install kmod-nfnetlink-queue kmod-nft-queue kmod-nf-conntrack
+  opkg install kmod-nfnetlink-queue kmod-nft-queue kmod-nf-conntrack || { echo 'ERROR: opkg install youtubeUnblock depends'; exit 1; }
 
   ### Скачиваем и устанавливаем пакеты youtubeUnblock для OpenWrt 24.10
-  # System -> Software -> Upload Package.. -> Browse.. -> youtubeUnblock-1.3.1-1-4a223b0-mips_24kc-openwrt-24.10.ipk -> Upload -> Install -> Dismiss
-  # System -> Software -> Upload Package.. -> Browse.. -> luci-app-youtubeUnblock-1.3.1-1-4a223b0.ipk -> Upload -> Install -> Dismiss
+  # System -> Software -> Upload Package.. -> Browse.. -> youtubeUnblock-*.ipk -> Upload -> Install -> Dismiss
+  # System -> Software -> Upload Package.. -> Browse.. -> luci-app-youtubeUnblock-*.ipk -> Upload -> Install -> Dismiss
    VERSION='1.3.1'
   BASE_URL="https://github.com/Waujito/youtubeUnblock/releases/download/v${VERSION}"
-     BUILD="${VERSION}-1-4a223b0"
-      ARCH=$(opkg print-architecture | awk 'END{print $2}')
-  pkg="youtubeUnblock-${BUILD}-${ARCH}-openwrt-24.10"
-  url="${BASE_URL}/${pkg}.ipk"
-  wget -qO     "/tmp/${pkg}.ipk" "$url" || { echo "DOWNLOAD ERROR: ${url}"; exit 1; }
-  opkg install "/tmp/${pkg}.ipk"        || { echo "INSTALL ERROR: ${pkg}" ; exit 1; }
+     BUILD='1-4a223b0'
+      ARCH=$(opkg print-architecture|awk 'END{print $2}')
+  pkg="youtubeUnblock-${VERSION}-${BUILD}-${ARCH}-openwrt-24.10"
+  wget -qO     "/tmp/${pkg}.ipk" "${BASE_URL}/${pkg}.ipk" || { echo "ERROR: Download url: ${url}"; exit 1; }
+  opkg install "/tmp/${pkg}.ipk"                          || { echo "ERROR: Install pkg: ${pkg}" ; exit 1; }
   rm -f        "/tmp/${pkg}.ipk"
-  pkg="luci-app-youtubeUnblock-${BUILD}"
-  url="${BASE_URL}/${pkg}.ipk"
-  wget -qO     "/tmp/${pkg}.ipk" "$url" || { echo "DOWNLOAD ERROR: ${url}"; exit 1; }
-  opkg install "/tmp/${pkg}.ipk"        || { echo "INSTALL ERROR: ${pkg}" ; exit 1; }
+  pkg="luci-app-youtubeUnblock-${VERSION}-${BUILD}"
+  wget -qO     "/tmp/${pkg}.ipk" "${BASE_URL}/${pkg}.ipk" || { echo "ERROR: Download url: ${url}"; exit 1; }
+  opkg install "/tmp/${pkg}.ipk"                          || { echo "ERROR: Install pkg: ${pkg}" ; exit 1; }
   rm -f        "/tmp/${pkg}.ipk"
 
   ### Отключаем Routing/NAT Offloading (он должен быть выключен для работы любых DPI-обходчиков на базе nfqws)
@@ -237,7 +239,7 @@ reboot
 
   ### Применяем изменения
   uci commit
-  /etc/init.d/firewall restart
+  /etc/init.d/firewall reload
 
   ### Включаем youtubeUnblock в автозагрузку
   # System -> Startup -> youtubeUnblock -> Enabled
@@ -253,3 +255,9 @@ reboot
 Если ютуб еще не заработал, то мне (провайдер Ростелеком) помогло это: **Services** -> **youtubeUnblock** -> **Configuration** -> **Default section** -> **Edit** -> **\[ \] Fake sni** -> **Save** -> **Save & Apply**.
 
 Вот и все - теперь YouTube работает без использования VPN. И еще бонусом - в YouTube не будет рекламы.
+
+***
+
+## Ссылки
+
+- [Прошивка Mikrotik в OpenWRT](https://global-hotspot.ru/%D0%BF%D1%80%D0%BE%D1%88%D0%B8%D0%B2%D0%BA%D0%B0-mikrotik-%D0%B2-openwrt/)
