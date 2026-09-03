@@ -193,7 +193,7 @@ opkg remove --force-depends smartdns luci-app-smartdns
 /etc/init.d/wsdd2          stop 2>/dev/null && /etc/init.d/wsdd2          disable
 /etc/init.d/youtubeUnblock stop 2>/dev/null && /etc/init.d/youtubeUnblock disable
 
-### Применяем все изменения
+### Применяем изменения
 uci commit
 sysctl -p -q
 
@@ -206,6 +206,10 @@ reboot
 
 ```bash
 (
+  ### Установка youtubeUnblock. Поддерживаемые устройства:
+  # - Любой MikroTik с архитектурой MIPSBE, прошитый в OpenWrt 24.10
+  # - Nano Pi R3S LTS c установленной FriendlyWrt 24.10
+
   ### Обновляем списки пакетов
   # System -> Software -> Update lists..
   opkg update || { echo 'ERROR: opkg update'; exit 1; }
