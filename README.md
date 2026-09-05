@@ -8,7 +8,7 @@
 4. Скачиваем файлы прошивок в эту же папку - **C:\pxesrv\\**:
    - для **RB952Ui-5ac2nD (hAP ac lite)**:
      - [openwrt-22.03.3-ath79-mikrotik-mikrotik_routerboard-952ui-5ac2nd-initramfs-kernel.bin](https://downloads.openwrt.org/releases/22.03.3/targets/ath79/mikrotik/openwrt-22.03.3-ath79-mikrotik-mikrotik_routerboard-952ui-5ac2nd-initramfs-kernel.bin)
-     - [openwrt-24.10.4-ath79-mikrotik-mikrotik_routerboard-952ui-5ac2nd-squashfs-sysupgrade.bin](https://downloads.openwrt.org/releases/24.10.4/targets/ath79/mikrotik/openwrt-24.10.4-ath79-mikrotik-mikrotik_routerboard-952ui-5ac2nd-squashfs-sysupgrade.bin)
+     - [openwrt-24.10.8-ath79-mikrotik-mikrotik_routerboard-952ui-5ac2nd-squashfs-sysupgrade.bin](https://downloads.openwrt.org/releases/24.10.8/targets/ath79/mikrotik/openwrt-24.10.8-ath79-mikrotik-mikrotik_routerboard-952ui-5ac2nd-squashfs-sysupgrade.bin)
    - для **RB951Ui-2HnD**:
      - [openwrt-24.10.8-ath79-mikrotik-mikrotik_routerboard-951ui-2hnd-initramfs-kernel.bin](https://downloads.openwrt.org/releases/24.10.8/targets/ath79/mikrotik/openwrt-24.10.8-ath79-mikrotik-mikrotik_routerboard-951ui-2hnd-initramfs-kernel.bin)
      - [openwrt-24.10.8-ath79-mikrotik-mikrotik_routerboard-951ui-2hnd-squashfs-sysupgrade.bin](https://downloads.openwrt.org/releases/24.10.8/targets/ath79/mikrotik/openwrt-24.10.8-ath79-mikrotik-mikrotik_routerboard-951ui-2hnd-squashfs-sysupgrade.bin)
